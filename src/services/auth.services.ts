@@ -4,6 +4,7 @@ import { UserModel } from "../models/user";
 import { verifyOTP } from "./otp.service";
 
 import { generateAccessToken } from "../utils/jwt";
+import { ApiError } from "../utils/apiUtil";
 
 interface RegisterDto {
   fullName: string;
@@ -21,7 +22,7 @@ export async function registerUser(data: RegisterDto) {
   });
 
   if (existingUser) {
-    throw new Error("Email already registered.");
+    throw new ApiError("Email already registered.", 402);
   }
 
   // Verify OTP
@@ -66,7 +67,7 @@ export async function loginUser(data: LoginDto) {
   const user = await UserModel.findOne({ email });
 
   if (!user) {
-    throw new Error("Invalid email or password.");
+    throw new ApiError("Invalid email or password.", 400);
   }
 
   // Compare password
@@ -76,7 +77,7 @@ export async function loginUser(data: LoginDto) {
   );
 
   if (!isPasswordValid) {
-    throw new Error("Invalid email or password.");
+    throw new ApiError("Invalid email or password.", 400);
   }
 
   // Generate JWT
