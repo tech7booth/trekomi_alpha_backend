@@ -13,7 +13,9 @@ export function buildApp() {
 
     app.register(fastifyCookie)
     app.register(fastifyCors, {
-        origin: true,
+        origin: [
+            (process.env.WEB_URL || "*")
+        ],
         credentials: true
     })
 
